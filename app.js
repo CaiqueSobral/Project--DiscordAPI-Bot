@@ -1,7 +1,17 @@
 import Discord from 'discord.js';
+import 'dotenv/config';
+
+const token = process.env.TOKEN;
 
 const client = new Discord.Client({
-  intents: ['GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES'],
+  intents: [Discord.GatewayIntentBits.Guilds],
   partials: ['CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'USER'],
 });
-console.log(client);
+
+client.on('ready', (client) => {
+  console.log(`The bot ${client.user.tag} is now online!`);
+});
+
+client.login(token);
+
+console.log('Bot is running');

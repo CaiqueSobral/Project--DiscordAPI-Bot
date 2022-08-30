@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/CaiqueSobral/Project--DiscordAPI-Bot#readme",
   "dependencies": {
-    "discord.js": "^14.3.0"
+    "discord.js": "^14.3.0",
+    "dotenv": "^16.0.1"
   }
 }
