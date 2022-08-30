@@ -2,10 +2,10 @@
   "name": "project--discordapi-bot",
   "version": "1.0.0",
   "description": "This is a project made for learning the Discord API, and developing our very own discord BOT for our server.",
-  "main": "app.js",
+  "main": "main.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node ./src/main.js"
   },
   "repository": {
     "type": "git",
