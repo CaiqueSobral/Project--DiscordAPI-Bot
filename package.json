@@ -1,15 +1,24 @@
 {
-  "name": "Project--DiscordAPI-Bot",
+  "name": "project--discordapi-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a project made for learning the Discord API, and developing our very own discord BOT for our server.",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaiqueSobral/Project--DiscordAPI-Bot.git"
+  },
+  "author": "Caique Sobral",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CaiqueSobral/Project--DiscordAPI-Bot/issues"
+  },
+  "homepage": "https://github.com/CaiqueSobral/Project--DiscordAPI-Bot#readme",
   "dependencies": {
-    "discord.js": "^14.3.0"
+    "discord.js": "^14.3.0",
+    "dotenv": "^16.0.1"
   }
 }
