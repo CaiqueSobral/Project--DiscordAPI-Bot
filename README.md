@@ -11,4 +11,5 @@ This is a project made for learning the Discord API, and developing our very own
 ## Features
 
 - JavaScript
-- Node.JS
+- NodeJS
+- DiscordJS
