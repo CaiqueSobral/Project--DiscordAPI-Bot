@@ -1,6 +1,5 @@
 import Discord, { GatewayIntentBits } from 'discord.js';
-import { PhotoService } from './unsplash.js';
-import { Helpers } from './helpers.js';
+import { Helpers } from '../helpers/helpers.js';
 
 export class Bot {
   #token;
