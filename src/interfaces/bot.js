@@ -44,12 +44,11 @@ export class Bot {
   #userMessageHandler(message, userInput) {
     if (message.author.bot) return;
 
-    if (userInput === 'cat' || userInput === 'dog') {
-      this.#getPhoto(userInput).then((photo) => {
-        userInput = userInput === 'cat' ? 'gatinho' : 'cachorrinho';
-
+    const animal = this.#helpers.userInputAnimalCheck(userInput);
+    if (animal) {
+      this.#getPhoto(animal).then((photo) => {
         message.channel.send({
-          embeds: [this.#helpers.embedBuilder(userInput, photo)],
+          embeds: [this.#helpers.embedBuilder(animal, photo)],
         });
       });
     }
