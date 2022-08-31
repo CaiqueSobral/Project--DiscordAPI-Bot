@@ -1,11 +1,12 @@
 import Discord, { GatewayIntentBits } from 'discord.js';
-import 'dotenv/config';
+import { PhotoService } from './unsplash.js';
 
 export class Bot {
   #token;
   #bits;
   #options;
   #client;
+  #unsplash;
 
   constructor() {
     this.#token = process.env.TOKEN;
@@ -20,6 +21,7 @@ export class Bot {
       intents: this.#options,
       partials: ['CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'USER'],
     });
+    this.#unsplash = new PhotoService();
 
     this.#start();
   }
@@ -31,16 +33,31 @@ export class Bot {
 
     this.#client.on('messageCreate', (message) => {
       if (message.author.bot) return;
+      const userInput = message.content.toLowerCase();
 
-      const userInput = message.content.toLowerCase().split(' ');
-
-      if (user[0] === 'loot') {
-        message.reply(
-          `You have looted ${Math.floor(Math.random() * 1000)} gold!`
-        );
-      }
+      this.#userMessageHandler(message, userInput);
     });
 
     this.#client.login(this.#token);
+  }
+
+  #userMessageHandler(message, userInput) {
+    if (message.author.bot) return;
+
+    if (userInput === 'cat' || userInput === 'dog') {
+      this.#getPhoto(userInput).then((photo) => {
+        message.channel.send(
+          `Uma foto de um ${
+            userInput === 'cat' ? 'gatinho' : 'cachorrinho'
+          } para você!`
+        );
+        message.channel.send(photo);
+      });
+    }
+  }
+
+  async #getPhoto(userInput) {
+    const photo = await this.#unsplash.getPhoto(userInput);
+    return photo;
   }
 }

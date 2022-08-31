@@ -5,7 +5,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "start": "node ./src/main.js"
+    "start": "node -r dotenv/config ./src/main.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/CaiqueSobral/Project--DiscordAPI-Bot#readme",
   "dependencies": {
     "discord.js": "^14.3.0",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.2",
+    "node-fetch": "^3.2.10"
   }
 }
