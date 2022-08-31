@@ -6,6 +6,8 @@ This is a project made for learning the Discord API, and developing our very own
 ## Authors
 
 - [Caique Sobral](https://www.github.com/caiquesobral)
+- [Kauê Rocha](https://github.com/KaueRochaVieira)
+- [Marcos Rodrigues](https://github.com/marcos-silva-rodrigues)
 
 
 ## Features
