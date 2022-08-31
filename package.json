@@ -2,7 +2,7 @@
   "name": "project--discordapi-bot",
   "version": "1.0.0",
   "description": "This is a project made for learning the Discord API, and developing our very own discord BOT for our server.",
-  "main": "main.js",
+  "main": "./src/main.js",
   "type": "module",
   "scripts": {
     "start": "node -r dotenv/config ./src/main.js"
@@ -20,6 +20,7 @@
   "dependencies": {
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.2",
+    "heroku": "^7.62.0",
     "node-fetch": "^3.2.10"
   }
 }
