@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { EmbedBuilder } from 'discord.js';
 
 export class Helpers {
   async getPhoto(userInput) {
@@ -8,4 +9,15 @@ export class Helpers {
 
     return response.url;
   }
+
+  embedBuilder(input, imageUrl) {
+    const embed = new EmbedBuilder()
+      .setColor('#2274c7')
+      .setTitle(`Um ${input} selvagem apareceu!`)
+      .setImage(imageUrl);
+
+    return embed;
+  }
+
+  userInputAnimalCheck(userInput) {}
 }

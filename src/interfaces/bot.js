@@ -46,12 +46,11 @@ export class Bot {
 
     if (userInput === 'cat' || userInput === 'dog') {
       this.#getPhoto(userInput).then((photo) => {
-        message.channel.send(
-          `Uma foto de um ${
-            userInput === 'cat' ? 'gatinho' : 'cachorrinho'
-          } para você!`
-        );
-        message.channel.send(photo);
+        userInput = userInput === 'cat' ? 'gatinho' : 'cachorrinho';
+
+        message.channel.send({
+          embeds: [this.#helpers.embedBuilder(userInput, photo)],
+        });
       });
     }
   }
