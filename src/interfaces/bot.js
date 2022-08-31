@@ -1,12 +1,13 @@
 import Discord, { GatewayIntentBits } from 'discord.js';
 import { PhotoService } from './unsplash.js';
+import { Helpers } from './helpers.js';
 
 export class Bot {
   #token;
   #bits;
   #options;
   #client;
-  #unsplash;
+  #helpers;
 
   constructor() {
     this.#token = process.env.TOKEN;
@@ -21,7 +22,7 @@ export class Bot {
       intents: this.#options,
       partials: ['CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'USER'],
     });
-    this.#unsplash = new PhotoService();
+    this.#helpers = new Helpers();
 
     this.#start();
   }
@@ -57,7 +58,7 @@ export class Bot {
   }
 
   async #getPhoto(userInput) {
-    const photo = await this.#unsplash.getPhoto(userInput);
+    const photo = await this.#helpers.getPhoto(userInput);
     return photo;
   }
 }
