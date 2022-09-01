@@ -4,7 +4,7 @@ import { EmbedBuilder } from 'discord.js';
 export class Helpers {
   #catInputs = ['cat', 'gato', 'gatinho', 'psps', 'pspsps', 'gatin'];
   #dogInputs = ['dog', 'cachorro', 'cachorrinho', 'doguinho', 'cachorrin'];
-  #animalInputs = ['snake', 'bird', 'rabbit', 'hamster'];
+  #animalInputs = ['snake', 'bird', 'rabbit', 'hamster', 'horse'];
 
   async getPhoto(userInput) {
     const response = await fetch(
@@ -14,7 +14,7 @@ export class Helpers {
     return response.url;
   }
 
-  embedBuilder(input, imageUrl) {
+  embedAnimalBuilder(input, imageUrl) {
     const embed = new EmbedBuilder()
       .setColor('#2274c7')
       .setTitle(

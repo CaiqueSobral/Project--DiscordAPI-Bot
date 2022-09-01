@@ -48,7 +48,7 @@ export class Bot {
     if (animal) {
       this.#getPhoto(animal).then((photo) => {
         message.channel.send({
-          embeds: [this.#helpers.embedBuilder(animal, photo)],
+          embeds: [this.#helpers.embedAnimalBuilder(animal, photo)],
         });
       });
     }
