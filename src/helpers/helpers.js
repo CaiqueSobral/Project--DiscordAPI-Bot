@@ -31,10 +31,53 @@ export class Helpers {
     return embed;
   }
 
+  embedFeedBuiler(member, color, description, author, addFields, fieldValue) {
+    const embed = new EmbedBuilder()
+      .setColor(color)
+      .setDescription(description)
+      .setThumbnail(member.user.displayAvatarURL())
+      .setAuthor({
+        name: author,
+        iconURL: member.user.displayAvatarURL(),
+      })
+      .setFields([
+        {
+          name: addFields,
+          value: fieldValue,
+        },
+      ])
+      .setFooter({
+        text: member.user.id,
+      })
+      .setTimestamp();
+
+    return embed;
+  }
+
+  calcUserAge(createdAt) {
+    const today = new Date();
+    let userAge = today - createdAt;
+    const months = Math.floor(userAge / 1000 / 60 / 60 / 24 / 30);
+    const days = Math.floor(userAge / 1000 / 60 / 60 / 24 - months * 30);
+
+    if (months === 0 && days === 0) return 'Menos de 1 dia';
+    if (months === 0 && days > 0) return `${days} dia(s)`;
+    if (months > 0 && days === 0) return `${months} mês(es)`;
+    if (months > 0 && days > 0) return `${months} mês(es) e ${days} dia(s)`;
+  }
+
   userInputAnimalCheck(userInput) {
     if (this.#catInputs.includes(userInput)) return 'cat';
     if (this.#dogInputs.includes(userInput)) return 'dog';
     if (this.#animalInputs.includes(userInput)) return userInput;
     return false;
+  }
+
+  checkFeedChanel(guild) {
+    const channel = guild.channels.cache.find((chanel) => {
+      return chanel.name === 'feed';
+    });
+
+    return channel;
   }
 }

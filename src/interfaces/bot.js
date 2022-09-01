@@ -16,6 +16,8 @@ export class Bot {
       this.#bits.GuildMessages,
       this.#bits.MessageContent,
       this.#bits.GuildMessageReactions,
+      this.#bits.GuildPresences,
+      this.#bits.GuildMembers,
     ];
     this.#client = new Discord.Client({
       intents: this.#options,
@@ -27,6 +29,8 @@ export class Bot {
   }
 
   #start() {
+    this.#client.login(this.#token);
+
     this.#client.on('ready', (client) => {
       console.log(`The bot ${client.user.tag} is now online!`);
     });
@@ -38,7 +42,41 @@ export class Bot {
       this.#userMessageHandler(message, userInput);
     });
 
-    this.#client.login(this.#token);
+    this.#client.on('guildMemberAdd', (member) => {
+      const channel = this.#helpers.checkFeedChanel(member.guild);
+      if (!channel) return;
+
+      channel.send({
+        embeds: [
+          this.#helpers.embedFeedBuiler(
+            member,
+            '#2ebd2a',
+            `<@${member.user.id}> entrou no servidor!`,
+            'Novo membro!',
+            'Idade da conta:',
+            this.#helpers.calcUserAge(member.user.createdAt)
+          ),
+        ],
+      });
+    });
+
+    this.#client.on('guildMemberRemove', (member) => {
+      const channel = this.#helpers.checkFeedChanel(member.guild);
+      if (!channel) return;
+
+      channel.send({
+        embeds: [
+          this.#helpers.embedFeedBuiler(
+            member,
+            '#d32e2e',
+            `<@${member.user.id}> saiu da guilda!`,
+            'Membro saiu!',
+            'Roles:',
+            member.roles.cache.map((role) => role.name).join(', ')
+          ),
+        ],
+      });
+    });
   }
 
   #userMessageHandler(message, userInput) {
