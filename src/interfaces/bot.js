@@ -1,5 +1,6 @@
-import Discord, { GatewayIntentBits, VoiceState } from 'discord.js';
+import Discord, { GatewayIntentBits } from 'discord.js';
 import { Helpers } from '../helpers/helpers.js';
+import { Mongo } from '../database/mongo.js';
 
 export class Bot {
   #token;
@@ -39,6 +40,10 @@ export class Bot {
     this.#client.on('messageCreate', (message) => {
       if (message.author.bot) return;
       const userInput = message.content.toLowerCase();
+
+      if (userInput === process.env.CARIOCA_COUNT) {
+        this.#cariocaCount(message);
+      }
 
       this.#userMessageHandler(message, userInput);
     });
@@ -171,6 +176,19 @@ export class Bot {
         });
       });
     }
+  }
+
+  async #cariocaCount(message) {
+    const mongo = new Mongo();
+    await mongo.connect();
+    const collection = await mongo.getCollection('carioca');
+
+    let count = await mongo.getOne(collection, 'count');
+    count.count++;
+
+    console.log(count.count);
+
+    mongo.disconnect();
   }
 
   async #getPhoto(userInput) {
