@@ -9,6 +9,5 @@ const nodeApp = http.createServer((req, res) => {
 const port = process.env.PORT || 3000;
 nodeApp.listen(port, () => {
   console.log(`Listening on port ${port}...`);
+  const bot = new Bot();
 });
-
-const bot = new Bot();
