@@ -6,10 +6,6 @@ const nodeApp = http.createServer((req, res) => {
   res.end('Hello World!');
 });
 
-nodeApp.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
 const port = process.env.PORT || 3000;
 nodeApp.listen(port, () => {
   console.log(`Listening on port ${port}...`);
