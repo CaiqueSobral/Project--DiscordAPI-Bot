@@ -3,7 +3,7 @@ import http from 'http';
 
 const nodeApp = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello World!');
+  res.end('Bot is online!');
 });
 
 const port = process.env.PORT || 3000;
