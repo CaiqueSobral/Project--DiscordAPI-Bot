@@ -1,4 +1,4 @@
-import Discord, { GatewayIntentBits } from 'discord.js';
+import Discord, { GatewayIntentBits, VoiceState } from 'discord.js';
 import { Helpers } from '../helpers/helpers.js';
 
 export class Bot {
@@ -18,6 +18,7 @@ export class Bot {
       this.#bits.GuildMessageReactions,
       this.#bits.GuildPresences,
       this.#bits.GuildMembers,
+      this.#bits.GuildVoiceStates,
     ];
     this.#client = new Discord.Client({
       intents: this.#options,
@@ -50,7 +51,7 @@ export class Bot {
         embeds: [
           this.#helpers.embedFeedBuiler(
             member,
-            '#2ebd2a',
+            '#53b05a',
             `<@${member.user.id}> entrou no servidor!`,
             'Novo membro!',
             'Idade da conta:',
@@ -58,6 +59,32 @@ export class Bot {
           ),
         ],
       });
+
+      try {
+        const role = member.guild.roles.cache.find(
+          (role) => role.name === 'ESTAGS'
+        );
+        member.roles.add(role);
+
+        channel.send({
+          embeds: [
+            this.#helpers.embedFeedBuiler(
+              member,
+              '#0270d1',
+              null,
+              `${member.user.tag}`,
+              '**<@' +
+                member.user.id +
+                '> recebeu o cargo `' +
+                role.name +
+                '`**',
+              null
+            ),
+          ],
+        });
+      } catch (error) {
+        console.log(error);
+      }
     });
 
     this.#client.on('guildMemberRemove', (member) => {
@@ -68,11 +95,65 @@ export class Bot {
         embeds: [
           this.#helpers.embedFeedBuiler(
             member,
-            '#d32e2e',
+            '#d13e04',
             `<@${member.user.id}> saiu da guilda!`,
             'Membro saiu!',
             'Roles:',
             member.roles.cache.map((role) => role.name).join(', ')
+          ),
+        ],
+      });
+    });
+
+    this.#client.on('voiceStateUpdate', (oldState, newState) => {
+      if (oldState.channelId === newState.channelId) return;
+
+      const channel = this.#helpers.checkFeedChanel(newState.guild);
+      if (!channel) return;
+      let message;
+      let color;
+
+      if (!oldState.channelId) {
+        message =
+          '**<@' +
+          newState.member.id +
+          '> entrou no canal `' +
+          newState.channel.name +
+          '`**';
+        color = '#53b05a';
+      }
+
+      if (!newState.channelId) {
+        message =
+          '**<@' +
+          oldState.member.id +
+          '> saiu do canal `' +
+          oldState.channel.name +
+          '`**';
+        color = '#d13e04';
+      }
+
+      if (oldState.channelId && newState.channelId) {
+        message =
+          '**<@' +
+          newState.member.id +
+          '> mudou de canal de `' +
+          oldState.channel.name +
+          '` para `' +
+          newState.channel.name +
+          '`**';
+        color = '#0270d1';
+      }
+
+      channel.send({
+        embeds: [
+          this.#helpers.embedFeedBuiler(
+            newState.member,
+            color,
+            null,
+            `${newState.member.user.tag}`,
+            message,
+            null
           ),
         ],
       });

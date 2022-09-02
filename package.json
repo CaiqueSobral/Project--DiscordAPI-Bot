@@ -5,7 +5,8 @@
   "main": "./src/main.js",
   "type": "module",
   "scripts": {
-    "start": "node -r dotenv/config ./src/main.js"
+    "start": "node -r dotenv/config ./src/main.js",
+    "dev": "nodemon -r dotenv/config src/main.js"
   },
   "repository": {
     "type": "git",

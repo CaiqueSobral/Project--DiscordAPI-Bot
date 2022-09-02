@@ -32,24 +32,33 @@ export class Helpers {
   }
 
   embedFeedBuiler(member, color, description, author, addFields, fieldValue) {
-    const embed = new EmbedBuilder()
+    let embed = new EmbedBuilder()
       .setColor(color)
-      .setDescription(description)
-      .setThumbnail(member.user.displayAvatarURL())
       .setAuthor({
         name: author,
         iconURL: member.user.displayAvatarURL(),
       })
-      .setFields([
-        {
-          name: addFields,
-          value: fieldValue,
-        },
-      ])
       .setFooter({
         text: member.user.id,
       })
       .setTimestamp();
+
+    if (fieldValue) {
+      embed
+        .setFields([
+          {
+            name: addFields,
+            value: fieldValue,
+          },
+        ])
+        .setThumbnail(member.user.displayAvatarURL());
+    }
+
+    if (description) {
+      embed.setDescription(description);
+    } else {
+      embed.setDescription(addFields);
+    }
 
     return embed;
   }
