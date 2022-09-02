@@ -82,9 +82,9 @@ export class Helpers {
     return false;
   }
 
-  checkFeedChanel(guild) {
+  checkChanel(channelName, guild) {
     const channel = guild.channels.cache.find((chanel) => {
-      return chanel.name === 'feed';
+      return chanel.name === channelName;
     });
 
     return channel;

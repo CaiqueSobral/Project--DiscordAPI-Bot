@@ -49,7 +49,7 @@ export class Bot {
     });
 
     this.#client.on('guildMemberAdd', (member) => {
-      const channel = this.#helpers.checkFeedChanel(member.guild);
+      const channel = this.#helpers.checkChanel('feed', member.guild);
       if (!channel) return;
 
       channel.send({
@@ -93,7 +93,7 @@ export class Bot {
     });
 
     this.#client.on('guildMemberRemove', (member) => {
-      const channel = this.#helpers.checkFeedChanel(member.guild);
+      const channel = this.#helpers.checkChanel('feed', member.guild);
       if (!channel) return;
 
       channel.send({
@@ -113,7 +113,7 @@ export class Bot {
     this.#client.on('voiceStateUpdate', (oldState, newState) => {
       if (oldState.channelId === newState.channelId) return;
 
-      const channel = this.#helpers.checkFeedChanel(newState.guild);
+      const channel = this.#helpers.checkChanel('feed', newState.guild);
       if (!channel) return;
       let message;
       let color;
@@ -179,6 +179,12 @@ export class Bot {
   }
 
   async #cariocaCount(message) {
+    const channel = this.#helpers.checkChanel(
+      process.env.CARIOCA_CHANNEL,
+      message.guild
+    );
+    if (!channel) return;
+
     const mongo = new Mongo();
     await mongo.connect();
     const collection = await mongo.getCollection('carioca');
