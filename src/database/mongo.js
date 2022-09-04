@@ -34,6 +34,22 @@ export class Mongo {
     }
   }
 
+  async cariUrls() {
+    try {
+      const collection = this.#client.db('cbtroll').collection('carioca');
+      const result = await collection.findOne({
+        _id: ObjectId('6312521a87fa6500bea45d31'),
+      });
+      return result.urls[this.generateRandomNumber(0, result.urls.length - 1)];
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  generateRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   async cariCount() {
     try {
       const collection = this.#client.db('cbtroll').collection('carioca');

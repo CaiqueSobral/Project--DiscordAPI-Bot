@@ -67,6 +67,27 @@ export class Helpers {
         .setTimestamp();
       return embed;
     }
+
+    if (type === 'carioca') {
+      embed
+        .setAuthor({
+          name: builder.author,
+          iconURL: builder.iconURL,
+        })
+        .setImage(builder.thumbnail)
+        .setTitle(builder.description)
+        .setFields([
+          {
+            name: builder.fieldName,
+            value: builder.fieldValue,
+          },
+        ])
+        .setFooter({
+          text: builder.footer,
+        })
+        .setTimestamp();
+      return embed;
+    }
   }
 
   calcUserAge(createdAt) {
