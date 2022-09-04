@@ -1,5 +1,6 @@
-import Discord, { GatewayIntentBits, VoiceState } from 'discord.js';
+import Discord, { GatewayIntentBits } from 'discord.js';
 import { Helpers } from '../helpers/helpers.js';
+import { Mongo } from '../database/mongo.js';
 
 export class Bot {
   #token;
@@ -40,24 +41,30 @@ export class Bot {
       if (message.author.bot) return;
       const userInput = message.content.toLowerCase();
 
+      if (userInput === process.env.CARIOCA_COUNT) {
+        this.#cariocaCount(message);
+      }
+
       this.#userMessageHandler(message, userInput);
     });
 
     this.#client.on('guildMemberAdd', (member) => {
-      const channel = this.#helpers.checkFeedChanel(member.guild);
+      const channel = this.#helpers.checkChanel('feed', member.guild);
       if (!channel) return;
 
+      const embed = {
+        color: '#53b05a',
+        description: `<@${member.user.id}> entrou no servidor!`,
+        iconURL: member.user.displayAvatarURL(),
+        thumbnail: member.user.displayAvatarURL(),
+        author: 'Novo membro!',
+        footer: member.user.id,
+        fieldValue: this.#helpers.calcUserAge(member.user.createdAt),
+        fieldName: `Idade da conta:`,
+      };
+
       channel.send({
-        embeds: [
-          this.#helpers.embedFeedBuiler(
-            member,
-            '#53b05a',
-            `<@${member.user.id}> entrou no servidor!`,
-            'Novo membro!',
-            'Idade da conta:',
-            this.#helpers.calcUserAge(member.user.createdAt)
-          ),
-        ],
+        embeds: [this.#helpers.embedBuilder('MemberAddRemove', embed)],
       });
 
       try {
@@ -66,21 +73,17 @@ export class Bot {
         );
         member.roles.add(role);
 
+        const roleEmbed = {
+          color: '#0270d1',
+          description:
+            '**<@' + member.user.id + '> recebeu o cargo `' + role.name + '`**',
+          iconURL: member.user.displayAvatarURL(),
+          author: member.user.tag,
+          footer: member.user.id,
+        };
+
         channel.send({
-          embeds: [
-            this.#helpers.embedFeedBuiler(
-              member,
-              '#0270d1',
-              null,
-              `${member.user.tag}`,
-              '**<@' +
-                member.user.id +
-                '> recebeu o cargo `' +
-                role.name +
-                '`**',
-              null
-            ),
-          ],
+          embeds: [this.#helpers.embedBuilder('feed', roleEmbed)],
         });
       } catch (error) {
         console.log(error);
@@ -88,27 +91,29 @@ export class Bot {
     });
 
     this.#client.on('guildMemberRemove', (member) => {
-      const channel = this.#helpers.checkFeedChanel(member.guild);
+      const channel = this.#helpers.checkChanel('feed', member.guild);
       if (!channel) return;
 
+      const embed = {
+        color: '#d13e04',
+        description: `<@${member.user.id}> saiu do servidor!`,
+        iconURL: member.user.displayAvatarURL(),
+        thumbnail: member.user.displayAvatarURL(),
+        author: 'Membro saiu!',
+        footer: member.user.id,
+        fieldValue: member.roles.cache.map((role) => role.name).join(', '),
+        fieldName: `Roles:`,
+      };
+
       channel.send({
-        embeds: [
-          this.#helpers.embedFeedBuiler(
-            member,
-            '#d13e04',
-            `<@${member.user.id}> saiu da guilda!`,
-            'Membro saiu!',
-            'Roles:',
-            member.roles.cache.map((role) => role.name).join(', ')
-          ),
-        ],
+        embeds: [this.#helpers.embedBuilder('MemberAddRemove', embed)],
       });
     });
 
     this.#client.on('voiceStateUpdate', (oldState, newState) => {
       if (oldState.channelId === newState.channelId) return;
 
-      const channel = this.#helpers.checkFeedChanel(newState.guild);
+      const channel = this.#helpers.checkChanel('feed', newState.guild);
       if (!channel) return;
       let message;
       let color;
@@ -145,17 +150,16 @@ export class Bot {
         color = '#0270d1';
       }
 
+      const embed = {
+        color: color,
+        author: newState.member.user.tag,
+        iconURL: newState.member.user.displayAvatarURL(),
+        description: message,
+        footer: newState.member.user.id,
+      };
+
       channel.send({
-        embeds: [
-          this.#helpers.embedFeedBuiler(
-            newState.member,
-            color,
-            null,
-            `${newState.member.user.tag}`,
-            message,
-            null
-          ),
-        ],
+        embeds: [this.#helpers.embedBuilder('feed', embed)],
       });
     });
   }
@@ -166,11 +170,44 @@ export class Bot {
     const animal = this.#helpers.userInputAnimalCheck(userInput);
     if (animal) {
       this.#getPhoto(animal).then((photo) => {
+        const embed = {
+          color: '#0270d1',
+          input: animal,
+          imageUrl: photo,
+        };
         message.channel.send({
-          embeds: [this.#helpers.embedAnimalBuilder(animal, photo)],
+          embeds: [this.#helpers.embedBuilder('animal', embed)],
         });
       });
     }
+  }
+
+  async #cariocaCount(message) {
+    const channel = this.#helpers.checkChanel(
+      process.env.CARIOCA_CHANNEL,
+      message.guild
+    );
+    if (!channel) return;
+
+    const mongo = new Mongo();
+    const result = await mongo.cariCount();
+
+    const embed = {
+      color: '#0270d1',
+      author: message.author.tag,
+      iconURL: message.author.displayAvatarURL(),
+      thumbnail: message.author.displayAvatarURL(),
+      description: `<@${message.author.id}> ${process.env.CARIOCA_MESSAGE}`,
+      fieldName: `${process.env.CARIOCA_MESSAGE2}`,
+      fieldValue: result.count,
+      footer: message.author.id,
+    };
+
+    message.channel.send({
+      embeds: [this.#helpers.embedBuilder('MemberAddRemove', embed)],
+    });
+
+    mongo.disconnect();
   }
 
   async #getPhoto(userInput) {
