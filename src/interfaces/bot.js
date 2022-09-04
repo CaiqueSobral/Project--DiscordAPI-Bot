@@ -190,13 +190,22 @@ export class Bot {
     if (!channel) return;
 
     const mongo = new Mongo();
-    await mongo.connect();
-    const collection = await mongo.getCollection('carioca');
+    const result = await mongo.cariCount();
 
-    let count = await mongo.getOne(collection, 'count');
-    count.count++;
+    const embed = {
+      color: '#0270d1',
+      author: message.author.tag,
+      iconURL: message.author.displayAvatarURL(),
+      thumbnail: message.author.displayAvatarURL(),
+      description: `<@${message.author.id}> ${process.env.CARIOCA_MESSAGE}`,
+      fieldName: `${process.env.CARIOCA_MESSAGE2}`,
+      fieldValue: result.count,
+      footer: message.author.id,
+    };
 
-    console.log(count.count);
+    message.channel.send({
+      embeds: [this.#helpers.embedBuilder('MemberAddRemove', embed)],
+    });
 
     mongo.disconnect();
   }

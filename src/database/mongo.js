@@ -1,18 +1,18 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 export class Mongo {
-  #db;
   #client;
 
   constructor() {
     const url = process.env.MONGO_URL;
     this.#client = new MongoClient(url);
+
+    this.connect();
   }
 
   async connect() {
     try {
       await this.#client.connect();
-      this.#db = this.#client.db('cbtroll');
     } catch (error) {
       console.log(error);
     }
@@ -22,17 +22,33 @@ export class Mongo {
     await this.#client.close();
   }
 
-  async getOne(collection, filter) {
-    const result = await this.#db.collection(collection).findOne(filter);
-    return result;
+  async insertManyInfo(data) {
+    try {
+      const collection = this.#client.db('cbtroll').collection('carioca');
+      await collection.updateOne(
+        { _id: ObjectId('6312521a87fa6500bea45d31') },
+        { $set: { urls: data } }
+      );
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  async getCollection(collection) {
-    return this.#db.collection(collection);
-  }
+  async cariCount() {
+    try {
+      const collection = this.#client.db('cbtroll').collection('carioca');
+      const result = await collection.findOne({
+        _id: ObjectId('6312521a87fa6500bea45d31'),
+      });
 
-  async updateOne(collection, filter, data) {
-    const col = await this.getCollection(collection);
-    return col.updateOne(filter, data);
+      await collection.updateOne(
+        { _id: ObjectId('6312521a87fa6500bea45d31') },
+        { $set: { count: result.count + 1 } }
+      );
+
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
