@@ -191,20 +191,22 @@ export class Bot {
 
     const mongo = new Mongo();
     const result = await mongo.cariCount();
-
+    const description = '' + process.env.CARIOCA_MESSAGE;
+    const fieldValue = '' + process.env.CARIOCA_MESSAGE2;
+    const imageURL = await mongo.cariUrls();
     const embed = {
       color: '#0270d1',
       author: message.author.tag,
       iconURL: message.author.displayAvatarURL(),
-      thumbnail: message.author.displayAvatarURL(),
-      description: `<@${message.author.id}> ${process.env.CARIOCA_MESSAGE}`,
-      fieldName: `${process.env.CARIOCA_MESSAGE2}`,
-      fieldValue: result.count,
+      thumbnail: imageURL,
+      description: `**${description}**`,
+      fieldName: fieldValue,
+      fieldValue: `**${result.count + 1}**`,
       footer: message.author.id,
     };
 
-    message.channel.send({
-      embeds: [this.#helpers.embedBuilder('MemberAddRemove', embed)],
+    channel.send({
+      embeds: [this.#helpers.embedBuilder('carioca', embed)],
     });
 
     mongo.disconnect();
