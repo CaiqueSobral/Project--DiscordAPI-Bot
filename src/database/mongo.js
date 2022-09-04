@@ -23,7 +23,7 @@ export class Mongo {
   }
 
   async getOne(collection, filter) {
-    const result = await collection.findOne({ [filter]: { $exists: true } });
+    const result = await this.#db.collection(collection).findOne(filter);
     return result;
   }
 

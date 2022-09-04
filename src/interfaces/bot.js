@@ -52,17 +52,19 @@ export class Bot {
       const channel = this.#helpers.checkChanel('feed', member.guild);
       if (!channel) return;
 
+      const embed = {
+        color: '#53b05a',
+        description: `<@${member.user.id}> entrou no servidor!`,
+        iconURL: member.user.displayAvatarURL(),
+        thumbnail: member.user.displayAvatarURL(),
+        author: 'Novo membro!',
+        footer: member.user.id,
+        fieldValue: this.#helpers.calcUserAge(member.user.createdAt),
+        fieldName: `Idade da conta:`,
+      };
+
       channel.send({
-        embeds: [
-          this.#helpers.embedFeedBuiler(
-            member,
-            '#53b05a',
-            `<@${member.user.id}> entrou no servidor!`,
-            'Novo membro!',
-            'Idade da conta:',
-            this.#helpers.calcUserAge(member.user.createdAt)
-          ),
-        ],
+        embeds: [this.#helpers.embedBuilder('MemberAddRemove', embed)],
       });
 
       try {
@@ -71,21 +73,17 @@ export class Bot {
         );
         member.roles.add(role);
 
+        const roleEmbed = {
+          color: '#0270d1',
+          description:
+            '**<@' + member.user.id + '> recebeu o cargo `' + role.name + '`**',
+          iconURL: member.user.displayAvatarURL(),
+          author: member.user.tag,
+          footer: member.user.id,
+        };
+
         channel.send({
-          embeds: [
-            this.#helpers.embedFeedBuiler(
-              member,
-              '#0270d1',
-              null,
-              `${member.user.tag}`,
-              '**<@' +
-                member.user.id +
-                '> recebeu o cargo `' +
-                role.name +
-                '`**',
-              null
-            ),
-          ],
+          embeds: [this.#helpers.embedBuilder('feed', roleEmbed)],
         });
       } catch (error) {
         console.log(error);
@@ -96,17 +94,19 @@ export class Bot {
       const channel = this.#helpers.checkChanel('feed', member.guild);
       if (!channel) return;
 
+      const embed = {
+        color: '#d13e04',
+        description: `<@${member.user.id}> saiu do servidor!`,
+        iconURL: member.user.displayAvatarURL(),
+        thumbnail: member.user.displayAvatarURL(),
+        author: 'Membro saiu!',
+        footer: member.user.id,
+        fieldValue: member.roles.cache.map((role) => role.name).join(', '),
+        fieldName: `Roles:`,
+      };
+
       channel.send({
-        embeds: [
-          this.#helpers.embedFeedBuiler(
-            member,
-            '#d13e04',
-            `<@${member.user.id}> saiu da guilda!`,
-            'Membro saiu!',
-            'Roles:',
-            member.roles.cache.map((role) => role.name).join(', ')
-          ),
-        ],
+        embeds: [this.#helpers.embedBuilder('MemberAddRemove', embed)],
       });
     });
 
@@ -150,17 +150,16 @@ export class Bot {
         color = '#0270d1';
       }
 
+      const embed = {
+        color: color,
+        author: newState.member.user.tag,
+        iconURL: newState.member.user.displayAvatarURL(),
+        description: message,
+        footer: newState.member.user.id,
+      };
+
       channel.send({
-        embeds: [
-          this.#helpers.embedFeedBuiler(
-            newState.member,
-            color,
-            null,
-            `${newState.member.user.tag}`,
-            message,
-            null
-          ),
-        ],
+        embeds: [this.#helpers.embedBuilder('feed', embed)],
       });
     });
   }
@@ -171,8 +170,13 @@ export class Bot {
     const animal = this.#helpers.userInputAnimalCheck(userInput);
     if (animal) {
       this.#getPhoto(animal).then((photo) => {
+        const embed = {
+          color: '#0270d1',
+          input: animal,
+          imageUrl: photo,
+        };
         message.channel.send({
-          embeds: [this.#helpers.embedAnimalBuilder(animal, photo)],
+          embeds: [this.#helpers.embedBuilder('animal', embed)],
         });
       });
     }

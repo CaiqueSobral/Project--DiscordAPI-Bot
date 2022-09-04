@@ -14,53 +14,59 @@ export class Helpers {
     return response.url;
   }
 
-  embedAnimalBuilder(input, imageUrl) {
-    const embed = new EmbedBuilder()
-      .setColor('#2274c7')
-      .setTitle(
-        `Um ${
-          input === 'cat'
-            ? 'gatinho'
-            : input === 'dog'
-            ? 'cachorrinho'
-            : 'animalzinho'
-        } selvagem apareceu!`
-      )
-      .setImage(imageUrl);
+  embedBuilder(type, builder) {
+    let embed = new EmbedBuilder().setColor(builder.color);
 
-    return embed;
-  }
-
-  embedFeedBuiler(member, color, description, author, addFields, fieldValue) {
-    let embed = new EmbedBuilder()
-      .setColor(color)
-      .setAuthor({
-        name: author,
-        iconURL: member.user.displayAvatarURL(),
-      })
-      .setFooter({
-        text: member.user.id,
-      })
-      .setTimestamp();
-
-    if (fieldValue) {
+    if (type === 'animal') {
       embed
+        .setTitle(
+          `Um ${
+            builder.input === 'cat'
+              ? 'gatinho'
+              : builder.input === 'dog'
+              ? 'cachorrinho'
+              : 'animalzinho'
+          } selvagem apareceu!`
+        )
+        .setImage(builder.imageUrl);
+
+      return embed;
+    }
+
+    if (type === 'feed') {
+      embed
+        .setAuthor({
+          name: builder.author,
+          iconURL: builder.iconURL,
+        })
+        .setDescription(builder.description)
+        .setFooter({
+          text: builder.footer,
+        })
+        .setTimestamp();
+      return embed;
+    }
+
+    if (type === 'MemberAddRemove') {
+      embed
+        .setAuthor({
+          name: builder.author,
+          iconURL: builder.iconURL,
+        })
+        .setThumbnail(builder.thumbnail)
+        .setDescription(builder.description)
         .setFields([
           {
-            name: addFields,
-            value: fieldValue,
+            name: builder.fieldName,
+            value: builder.fieldValue,
           },
         ])
-        .setThumbnail(member.user.displayAvatarURL());
+        .setFooter({
+          text: builder.footer,
+        })
+        .setTimestamp();
+      return embed;
     }
-
-    if (description) {
-      embed.setDescription(description);
-    } else {
-      embed.setDescription(addFields);
-    }
-
-    return embed;
   }
 
   calcUserAge(createdAt) {
